@@ -1,0 +1,89 @@
+{% extends 'main/base.html'%}
+
+{% block css %}
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        input[type=text], textarea {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+            <h1>{{ title }}</h1>
+            <form action="{% url 'main:add_customers' %}" method="post">
+                {% csrf_token %}
+                <label for="name">Имя Клиента:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="total_amount">Общий счёт покупок:</label>
+                <input type="text" id="total_amount" name="total_amount" required>
+
+                <label for="current_account">Текущий счёт:</label>
+                <input type="text" id="current_account" name="current_account" required>
+
+                <label for="loan">Потолок кредита:</label>
+                <input type="text" id="loan" name="loan" required>
+
+                <label for="debt">Текущий долг:</label>
+                <input type="text" id="debt" name="debt" required>
+
+                <label for="comment">Комментарий:</label>
+                <textarea id="comment" name="comment" required></textarea>
+
+                <button type="submit">Add Product</button>
+            </form>
+{% endblock %}

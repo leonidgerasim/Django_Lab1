@@ -1,0 +1,146 @@
+{% extends 'main/base.html'%}
+
+{% block css %}
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+
+        .card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        input[type=text], textarea {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+            <h1>{{ title }}</h1>
+                <table id="productTable">
+                    <thead>
+                        <tr>
+                            <th>ID Товара</th>
+                            <th>Название товара</th>
+                            <th>Описание</th>
+                            <th>Цена</th>
+                            <th>Количество</th>
+                            <th>Общая Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in order_detail %}
+                        <tr>
+                            <td>{{ detail.product.id }}</td>
+                            <td>{{ detail.product.name }}</td>
+                            <td>{{ detail.product.description }}</td>
+                            <td>{{ detail.product.price }}</td>
+                            <td>{{ detail.quantity }}</td>
+                            <td>{{ detail.total_amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <table id="barterTable">
+                    <thead>
+                        <tr>
+                            <th>ID Товара</th>
+                            <th>Название товара</th>
+                            <th>Описание</th>
+                            <th>Цена</th>
+                            <th>Количество</th>
+                            <th>Общая Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in products_barter %}
+                        <tr>
+                            <td>{{ detail.product.id }}</td>
+                            <td>{{ detail.product.name }}</td>
+                            <td>{{ detail.product.description }}</td>
+                            <td>{{ detail.product.price }}</td>
+                            <td>{{ detail.quantity }}</td>
+                            <td>{{ detail.total_amount }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <table id="sumTable">
+                    <thead>
+                        <tr>
+                            <th>Стоимость Заказа</th>
+                            <th>Бартер</th>
+                            <th>Остаток</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ total_amount_order }}</td>
+                            <td>{{ total_amount_barter }}</td>
+                            <td>{{ total_amount }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            <form action="{% url 'main:order_detail' order_id %}" method="post">
+                {% csrf_token %}
+                <p>
+                <label for="product">Товар:</label>
+                <select id="product" name="product">
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                    {% endfor %}
+                </select>
+                </p>
+
+                <label for="quantity">Количество:</label>
+                <input type="text" id="quantity" name="quantity" required>
+                <button type="submit">Добавить Товар</button>
+            </form>
+{% endblock %}
