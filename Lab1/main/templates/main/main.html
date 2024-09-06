@@ -31,11 +31,10 @@
 {% endblock %}
 
 {% block content %}
-<h1>Sales Operator Workplace</h1>
 <div>
     <a href="{% url 'main:customers' %}">Открыть базу клиентов</a>
-    <a href="{% url 'main:products_list' %}">Открыть базу товаров</a>
     <a href="{% url 'main:create_order' %}">Создать новый заказ</a>
+    <a href="{% url 'main:products_list' %}">Открыть базу товаров</a>
 </div>
 {% endblock %}
 
