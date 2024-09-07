@@ -5,16 +5,16 @@ from django import forms
 class AddProductsForm(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4',
-        'placeholder': 'Введите Название Товара'}))
+        'placeholder': 'Введите название товара'}))
     description = forms.CharField(widget=forms.Textarea(attrs={
         'class': 'form-control py-4',
-        'placeholder': 'Введите Описание Товара'}))
+        'placeholder': 'Введите описание товара'}))
     price = forms.DecimalField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4',
-        'placeholder': 'Введите Описание Товара'}))
+        'placeholder': 'Введите описание товара'}))
     quantity = forms.IntegerField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4',
-        'placeholder': 'Введите Описание Товара'}))
+        'placeholder': 'Введите описание товара'}))
 
     class Meta:
         model = Products
@@ -22,9 +22,9 @@ class AddProductsForm(forms.ModelForm):
 
 
 class SearchCustomersForm(forms.Form):
-    name = forms.CharField(widget=forms.TextInput(attrs={
+    name = forms.CharField(label="Имя и фамилия", widget=forms.TextInput(attrs={
         'class': 'form-control py-4',
-        'placeholder': 'Введите Имя Клиента'}))
+        'placeholder': 'Введите имя и фамилию клиента'}))
 
 
 class AddCustomersForm(forms.ModelForm):

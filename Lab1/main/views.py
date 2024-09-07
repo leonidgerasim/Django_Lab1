@@ -8,7 +8,30 @@ from django.db.models import Sum
 
 
 def index(request):
-    return render(request, 'main/main.html')
+    context = {'title': 'Главная'}
+    return render(request, 'main/main.html', context)
+
+
+def customers(request):
+    error = ''
+    customer = ''
+    valid = ''
+    if request.method == 'POST':
+        form = SearchCustomersForm(data=request.POST)
+        valid = form.is_valid()
+        if valid and Customers.objects.filter(name=request.POST['name']).exists():
+            customer = Customers.objects.filter(name=request.POST['name'])
+        else:
+            error = 'Ошибка'
+            customer = 'Такого Клиента нет'
+    else:
+        form = SearchCustomersForm()
+    context = {'title': 'Клиенты',
+               'form': form,
+               'customer': customer,
+               'error': error,
+               'valid': valid}
+    return render(request, 'main/customers.html', context)
 
 
 def products_list(request):
@@ -40,27 +63,6 @@ def add_product(request):
     return render(request, 'main/add_product.html', context)
 
 
-def customers(request):
-    error = ''
-    customer = ''
-    valid = ''
-    if request.method == 'POST':
-        form = SearchCustomersForm(data=request.POST)
-        valid = form.is_valid()
-        if valid:
-            name = request.POST['name']
-            customer = Customers.objects.get(name=name)
-        else:
-            error = 'Ошибка'
-            customer = 'Такого Клиента Нет'
-    else:
-        form = SearchCustomersForm()
-    context = {'title': 'Клиенты',
-               'form': form,
-               'customer': customer,
-               'error': error,
-               'valid': valid}
-    return render(request, 'main/customers.html', context)
 
 
 def add_customers(request):

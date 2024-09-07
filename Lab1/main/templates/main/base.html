@@ -3,9 +3,37 @@
 <html lang="ru">
 <head>
     <title>{{ title }}</title>
-    {% block css %} {% endblock %}
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #FFFFFF;
+        }
+
+        .card {
+            background-color: #808080;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            border-radius: 5px;
+            padding: 50px 20px;
+        }
+
+        .btn {
+            background-color: #FFFFFF;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            }
+        {% block css %} {% endblock %}
+    </style>
 </head>
-<body>
+<body style="background-color: #FFFFFF">
  <div class="container">
         <div class="card">
             {% block content%} {% endblock %}
