@@ -30,7 +30,48 @@
             cursor: pointer;
             margin: 10px;
             }
-        {% block css %} {% endblock %}
+
+        button {
+            background-color: #FFFFFF;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        table {
+            margin-top: 10px;
+            margin-right: 5px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #FFFFFF;
+            background-color: #FFFFFF;
+        }
+
+        input[type=text], textarea {
+            background-color: #FFFFFF;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        select {
+            margin: 8px;
+            padding: 8px 16px;
+        }
+        {% block css %}
+        {% endblock %}
     </style>
 </head>
 <body style="background-color: #FFFFFF">

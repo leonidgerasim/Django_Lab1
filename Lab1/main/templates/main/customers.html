@@ -3,15 +3,17 @@
 {% block css %}
 
         table {
+            margin-top: 10px;
+            margin-right: 5px;
             width: 100%;
             border-collapse: collapse;
-            font-family: Arial, sans-serif;
         }
 
         th, td {
             padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border: 1px solid #FFFFFF;
+            background-color: #FFFFFF;
         }
 
         th {
@@ -24,6 +26,7 @@
         }
 
         input[type=text], textarea {
+            background-color: #FFFFFF;
             width: 100%;
             padding: 12px 20px;
             margin: 8px 0;
@@ -31,17 +34,6 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
-        }
-
-        button {
-            background-color: #FFFFFF;
-            color: black;
-            padding: 10px 20px;
-            border: none;
-            text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px;
         }
 {% endblock %}
 
@@ -53,15 +45,19 @@
     <a href="{% url 'main:index' %}" class="btn">Выйти</a>
 </form>
 {% if valid %}
+<table>
     {% for i in customer %}
-        {{ i }}
-        {{ i.total_amount }}
-        {{ i.current_account }}
-        {{ i.loan }}
-        {{ i.debt }}
-        {{ i.loan_balance }}
-        {{ i.comment }}
+        <tr>
+            <td>{{ i }}</td>
+            <td>{{ i.total_amount }}</td>
+            <td>{{ i.current_account }}</td>
+            <td>{{ i.loan }}</td>
+            <td>{{ i.debt }}</td>
+            <td>{{ i.loan_balance }}</td>
+            <td>{{ i.comment }}</td>
+        </tr>
     {% endfor %}
+</table>
 {% else %}
     {{ customer }}
 {% endif %}

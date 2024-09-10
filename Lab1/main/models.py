@@ -16,7 +16,7 @@ class Products(models.Model):
 class Customers(models.Model):
     name = models.CharField(max_length=200)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    current_account = models.DecimalField(max_digits=12, decimal_places=2)
+    current_amount = models.DecimalField(max_digits=12, decimal_places=2)
     loan = models.DecimalField(max_digits=12, decimal_places=2)
     debt = models.DecimalField(max_digits=12, decimal_places=2)
     loan_balance = models.DecimalField(max_digits=12, decimal_places=2)

@@ -1,4 +1,4 @@
-from .models import Products, Customers
+from .models import Products, Customers, OrderDetail
 from django import forms
 
 
@@ -24,7 +24,8 @@ class AddProductsForm(forms.ModelForm):
 class SearchCustomersForm(forms.Form):
     name = forms.CharField(label="Имя и фамилия", widget=forms.TextInput(attrs={
         'class': 'form-control py-4',
-        'placeholder': 'Введите имя и фамилию клиента'}))
+        'placeholder': 'Введите имя и фамилию клиента',
+        }))
 
 
 class AddCustomersForm(forms.ModelForm):
@@ -62,6 +63,23 @@ class AddCustomersForm(forms.ModelForm):
                   "loan_balance",
                   "comment")
 
+
+class AddOrderDetailsForm(forms.ModelForm):
+    choices = []
+    for prod in Products.objects.all():
+        choices.append((prod.id, prod.name))
+    product = forms.ChoiceField(label='Товар:' ,choices=choices ,widget=forms.Select(attrs={
+        'class': 'form-control py-4',
+    }))
+    quantity = forms.IntegerField(label='Количество:' ,widget=forms.NumberInput(attrs={
+        'class': 'form-control py-4',
+        'placeholder': 'Введите количество'
+    }))
+
+    class Meta:
+        model = OrderDetail
+        fields = ("product",
+                  "quantity")
 
 
 

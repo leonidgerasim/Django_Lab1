@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse
 from .models import Products, Customers, Order, OrderDetail, BarterOrder
-from .forms import AddProductsForm, SearchCustomersForm, AddCustomersForm
+from .forms import AddProductsForm, SearchCustomersForm, AddCustomersForm, AddOrderDetailsForm
 from django.db.models import Sum
 
 # Create your views here.
@@ -18,12 +18,12 @@ def customers(request):
     valid = ''
     if request.method == 'POST':
         form = SearchCustomersForm(data=request.POST)
-        valid = form.is_valid()
-        if valid and Customers.objects.filter(name=request.POST['name']).exists():
+        valid = form.is_valid() and Customers.objects.filter(name=request.POST['name']).exists()
+        if valid:
             customer = Customers.objects.filter(name=request.POST['name'])
         else:
             error = 'Ошибка'
-            customer = 'Такого Клиента нет'
+            customer = 'Такого клиента нет'
     else:
         form = SearchCustomersForm()
     context = {'title': 'Клиенты',
@@ -86,14 +86,14 @@ def create_order(request):
         customer = Customers.objects.get(id=customer_id)
         order = Order(customer=customer, type_sale=type_sale)
         order.save()
-        return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk,]))
+        return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, False]))
 
     context = {'title': 'Создать заказ',
                'customers': Customers.objects.all()}
     return render(request, 'main/create_order.html', context)
 
 
-def create_order_detail(request, order_id, error=False):
+def create_order_detail(request, order_id, error):
     order = get_object_or_404(Order, pk=order_id)
     total_amount = 0
     flag = False
@@ -101,6 +101,7 @@ def create_order_detail(request, order_id, error=False):
     customer = order.customer
     count = 10000000
     if request.method == 'POST':
+        form = AddOrderDetailsForm(data=request.POST["product"])
         product_id = request.POST["product"]
         quantity = request.POST["quantity"]
         product = Products.objects.get(id=product_id)
@@ -137,7 +138,9 @@ def create_order_detail(request, order_id, error=False):
                                                                 debt=debt,
                                                                 loan_balance=loan_balance)
 
-            return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, ]))
+            return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, error]))
+    else:
+        form = AddOrderDetailsForm()
 
     if type_sale == 'Бартер':
         for product in BarterOrder.objects.filter(order=order):
@@ -155,13 +158,14 @@ def create_order_detail(request, order_id, error=False):
         loan_balance = customer.loan - debt
         Customers.objects.filter(id=customer.id).update(debt=debt, loan_balance=loan_balance)
 
-    context = {'title': 'Заказ'+str(order_id),
+    context = {'title': 'Заказ '+str(order_id),
                'products': Products.objects.all(),
                'order_detail': OrderDetail.objects.filter(order=order),
                'total_amount': total_amount,
                'order_id': order_id,
                'flag': flag,
                'error': error,
+               'form': form,
                }
     return render(request, 'main/order_detail.html', context)
 
