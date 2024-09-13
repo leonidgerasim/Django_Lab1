@@ -1,5 +1,6 @@
 from .models import Products, Customers, OrderDetail
 from django import forms
+from django.core.validators import MaxValueValidator
 
 
 class AddProductsForm(forms.ModelForm):
@@ -68,8 +69,11 @@ class AddOrderDetailsForm(forms.ModelForm):
     choices = []
     for prod in Products.objects.all():
         choices.append((prod.id, prod.name))
-    product = forms.ChoiceField(label='Товар:' ,choices=choices ,widget=forms.Select(attrs={
-        'class': 'form-control py-4',
+    # product = forms.ChoiceField(label='Товар:' ,choices=choices ,widget=forms.Select(attrs={
+    #     'class': 'form-control py-4',
+    # }))
+    product = forms.ModelChoiceField(queryset=Products.objects.all() ,label='Товар:', widget=forms.Select(attrs={
+         'class': 'form-control py-4',
     }))
     quantity = forms.IntegerField(label='Количество:' ,widget=forms.NumberInput(attrs={
         'class': 'form-control py-4',

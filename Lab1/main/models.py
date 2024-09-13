@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 # Create your models here.
 
@@ -37,7 +38,7 @@ class Order(models.Model):
 class OrderDetail(models.Model):
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
     product = models.ForeignKey(to=Products, on_delete=models.CASCADE)
-    quantity = models.PositiveSmallIntegerField(default=0)
+    quantity = models.PositiveSmallIntegerField(default=0, )
     total_amount = models.DecimalField(default=0, max_digits=12, decimal_places=2)
 
     def __str__(self):

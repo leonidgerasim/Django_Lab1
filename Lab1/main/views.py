@@ -99,11 +99,10 @@ def create_order_detail(request, order_id, error):
     flag = False
     type_sale = order.type_sale
     customer = order.customer
-    count = 10000000
     if request.method == 'POST':
-        form = AddOrderDetailsForm(data=request.POST["product"])
-        product_id = request.POST["product"]
-        quantity = request.POST["quantity"]
+        product_id, quantity= AddOrderDetailsForm(data=request.POST["product"])
+        # product_id = request.POST["product"]
+        # quantity = request.POST["quantity"]
         product = Products.objects.get(id=product_id)
         count = product.quantity
         if count < int(quantity):
