@@ -1,6 +1,6 @@
 from .models import Products, Customers, OrderDetail
 from django import forms
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class AddProductsForm(forms.ModelForm):
@@ -65,25 +65,40 @@ class AddCustomersForm(forms.ModelForm):
                   "comment")
 
 
-class AddOrderDetailsForm(forms.ModelForm):
-    choices = []
-    for prod in Products.objects.all():
-        choices.append((prod.id, prod.name))
-    # product = forms.ChoiceField(label='Товар:' ,choices=choices ,widget=forms.Select(attrs={
-    #     'class': 'form-control py-4',
-    # }))
-    product = forms.ModelChoiceField(queryset=Products.objects.all() ,label='Товар:', widget=forms.Select(attrs={
-         'class': 'form-control py-4',
-    }))
-    quantity = forms.IntegerField(label='Количество:' ,widget=forms.NumberInput(attrs={
-        'class': 'form-control py-4',
-        'placeholder': 'Введите количество'
-    }))
+class AddOrderDetailsFormProduct(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        # disabled = kwargs.pop('disabled', None)
+        super(AddOrderDetailsFormProduct, self).__init__(*args, **kwargs)
+        self.fields['product'] = forms.ModelChoiceField(queryset=Products.objects.all(),
+                                                        disabled=False, label='Товар:',
+                                                        widget=forms.Select(attrs={
+                                                            'class': 'form-control py-4',
+                                                        }))
 
     class Meta:
         model = OrderDetail
-        fields = ("product",
-                  "quantity")
+        fields = ("product",)
+
+
+class AddOrderDetailsFormQuantity(forms.ModelForm):
+    quantity = forms.IntegerField(label='Количество:',
+                                                     initial=1,
+                                                     validators=[MinValueValidator(1),
+                                                                 MaxValueValidator(10000)],
+                                                     widget=forms.NumberInput(attrs={
+                                                         'class': 'form-control py-4',
+                                                         'placeholder': 'Введите количество'
+                                                     }))
+
+    def __init__(self, max_quantity=10000, *args, **kwargs):
+        # max_quantity = kwargs.pop('max_quantity', None)
+        super(AddOrderDetailsFormQuantity, self).__init__(*args, **kwargs)
+        self.fields['quantity'].validators = [MinValueValidator(1), MaxValueValidator(max_quantity)]
+
+    class Meta:
+        model = OrderDetail
+        fields = ("quantity",)
 
 
 

@@ -11,7 +11,7 @@ urlpatterns = [
     path('customers/', customers, name='customers'),
     path('add_customers/', add_customers, name='add_customers'),
     path('create_order/', create_order, name='create_order'),
-    path('order_detail/<int:order_id>/<str:error>', create_order_detail, name='order_detail'),
+    path('order_detail/<int:order_id>/<str:product_id>', create_order_detail, name='order_detail'),
     path('barter/<int:order_id>', barter, name='barter'),
     path('offset/<int:order_id>/<str:error>', offset, name='offset'),
 ]

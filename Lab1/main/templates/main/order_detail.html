@@ -41,19 +41,12 @@
     {% endfor %}
     </tbody>
 </table>
-<form action="{% url 'main:order_detail' order_id error%}" method="post">
+<form action="{% url 'main:order_detail' order_id product_id %}" method="post">
     {% csrf_token %}
-<!--    <p>-->
-<!--        <label for="product">Товар:</label>-->
-<!--        <select id="product" name="product">-->
-<!--            {% for product in products %}-->
-<!--            <option value="{{ product.id }}">{{ product.name }}</option>-->
-<!--            {% endfor %}-->
-<!--        </select>-->
-<!--    </p>-->
-    {{ form }}
-<!--    <label for="quantity">Количество:</label>-->
-<!--    <input type="number" id="quantity" name="quantity" required>-->
+    {{ product_form }}
+    {{ quantity_form }}
+    {{ error }}
+
     <button type="submit">Добавить Товар</button>
     <a href="{% url 'main:index' %}" class="btn">Сохранить</a>
 </form>

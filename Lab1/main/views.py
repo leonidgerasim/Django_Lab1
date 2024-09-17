@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse
 from .models import Products, Customers, Order, OrderDetail, BarterOrder
-from .forms import AddProductsForm, SearchCustomersForm, AddCustomersForm, AddOrderDetailsForm
+from .forms import (AddProductsForm, SearchCustomersForm, AddCustomersForm, AddOrderDetailsFormProduct,
+                    AddOrderDetailsFormQuantity)
 from django.db.models import Sum
 
 # Create your views here.
@@ -63,8 +64,6 @@ def add_product(request):
     return render(request, 'main/add_product.html', context)
 
 
-
-
 def add_customers(request):
     data = ''
     if request.method == 'POST':
@@ -86,30 +85,39 @@ def create_order(request):
         customer = Customers.objects.get(id=customer_id)
         order = Order(customer=customer, type_sale=type_sale)
         order.save()
-        return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, False]))
+        return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, 'f']))
 
     context = {'title': 'Создать заказ',
                'customers': Customers.objects.all()}
     return render(request, 'main/create_order.html', context)
 
 
-def create_order_detail(request, order_id, error):
+def create_order_detail(request, order_id, product_id):
     order = get_object_or_404(Order, pk=order_id)
     total_amount = 0
     flag = False
+    error = False
     type_sale = order.type_sale
     customer = order.customer
-    if request.method == 'POST':
-        product_id, quantity= AddOrderDetailsForm(data=request.POST["product"])
-        # product_id = request.POST["product"]
-        # quantity = request.POST["quantity"]
-        product = Products.objects.get(id=product_id)
-        count = product.quantity
-        if count < int(quantity):
-            error = True
-            return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, error]))
-        else:
-            total_amount = int(quantity)*product.price
+    if request.method == 'POST' and product_id == 'f':
+        product_form = AddOrderDetailsFormProduct(data=request.POST)
+        quantity_form = ''
+        if product_form.is_valid():
+            product_id = product_form.cleaned_data.get("product").id
+            return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, product_id]))
+    elif request.method == 'POST' and product_id != 'f':
+        disabled = True
+        product_form = AddOrderDetailsFormProduct(
+                                                  initial={"product": (product_id,
+                                                                       Products.objects.get(id=int(product_id)))},
+                                                  )
+        quantity_form = AddOrderDetailsFormQuantity(data=request.POST)
+
+        if product_form.is_valid() and quantity_form.is_valid():
+            product = product_form.cleaned_data.get("product")
+            quantity = quantity_form.cleaned_data.get("quantity")
+
+            total_amount = int(quantity) * product.price
             order_detail = OrderDetail(order=order, product=product,
                                        quantity=quantity,
                                        total_amount=total_amount)
@@ -126,7 +134,6 @@ def create_order_detail(request, order_id, error):
                 s = customer.total_amount + total_amount
                 current_amount = customer.current_amount - total_amount
                 Customers.objects.filter(id=customer.id).update(total_amount=s, current_amount=current_amount)
-
             elif type_sale == 'Кредит':
                 s = customer.total_amount + total_amount
                 current_amount = 0
@@ -137,9 +144,21 @@ def create_order_detail(request, order_id, error):
                                                                 debt=debt,
                                                                 loan_balance=loan_balance)
 
-            return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, error]))
+                return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, None]))
+
+        else:
+            error = True
+    elif product_id != 'f':
+        disabled = True
+        product_form = AddOrderDetailsFormProduct(
+                                                  initial={"product": (int(product_id),
+                                                                       Products.objects.get(id=int(product_id)))},
+                                                  )
+        quantity_form = AddOrderDetailsFormQuantity(max_quantity=Products.objects.get(id=int(product_id)).quantity)
+
     else:
-        form = AddOrderDetailsForm()
+        product_form = AddOrderDetailsFormProduct()
+        quantity_form = ''
 
     if type_sale == 'Бартер':
         for product in BarterOrder.objects.filter(order=order):
@@ -162,9 +181,11 @@ def create_order_detail(request, order_id, error):
                'order_detail': OrderDetail.objects.filter(order=order),
                'total_amount': total_amount,
                'order_id': order_id,
+               'product_id': product_id,
                'flag': flag,
+               'product_form': product_form,
+               'quantity_form': quantity_form,
                'error': error,
-               'form': form,
                }
     return render(request, 'main/order_detail.html', context)
 
