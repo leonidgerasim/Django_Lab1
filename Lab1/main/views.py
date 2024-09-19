@@ -106,8 +106,7 @@ def create_order_detail(request, order_id, product_id):
             product_id = product_form.cleaned_data.get("product").id
             return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, product_id]))
     elif request.method == 'POST' and product_id != 'f':
-        disabled = True
-        product_form = AddOrderDetailsFormProduct(
+        product_form = AddOrderDetailsFormProduct(disabled=True,
                                                   initial={"product": (product_id,
                                                                        Products.objects.get(id=int(product_id)))},
                                                   )
@@ -147,10 +146,10 @@ def create_order_detail(request, order_id, product_id):
                 return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, None]))
 
         else:
-            error = True
+            error = (product_form.is_valid(), quantity_form.is_valid())
+
     elif product_id != 'f':
-        disabled = True
-        product_form = AddOrderDetailsFormProduct(
+        product_form = AddOrderDetailsFormProduct(disabled=True,
                                                   initial={"product": (int(product_id),
                                                                        Products.objects.get(id=int(product_id)))},
                                                   )

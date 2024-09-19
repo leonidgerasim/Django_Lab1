@@ -46,6 +46,20 @@
     {{ product_form }}
     {{ quantity_form }}
     {{ error }}
+<!--    {% if product_form.errors %}-->
+<!--        {% for field in product_form %}-->
+<!--            {% for error in field.errors %}-->
+<!--                <div class="alert alert-danger">-->
+<!--                    <strong>{{ error|escape }}</strong>-->
+<!--                </div>-->
+<!--            {% endfor %}-->
+<!--        {% endfor %}-->
+<!--        {% for error in form.non_field_errors %}-->
+<!--            <div class="alert alert-danger">-->
+<!--                <strong>{{ error|escape }}</strong>-->
+<!--            </div>-->
+<!--        {% endfor %}-->
+<!--{% endif %}-->
 
     <button type="submit">Добавить Товар</button>
     <a href="{% url 'main:index' %}" class="btn">Сохранить</a>

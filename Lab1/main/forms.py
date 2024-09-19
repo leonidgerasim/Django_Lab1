@@ -66,15 +66,18 @@ class AddCustomersForm(forms.ModelForm):
 
 
 class AddOrderDetailsFormProduct(forms.ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        # disabled = kwargs.pop('disabled', None)
-        super(AddOrderDetailsFormProduct, self).__init__(*args, **kwargs)
-        self.fields['product'] = forms.ModelChoiceField(queryset=Products.objects.all(),
+    product = forms.ModelChoiceField(queryset=Products.objects.all(),
                                                         disabled=False, label='Товар:',
                                                         widget=forms.Select(attrs={
                                                             'class': 'form-control py-4',
                                                         }))
+
+    def __init__(self, disabled=False, initial={"product": (9, Products.objects.get(id=9))}, *args, **kwargs):
+        disabled = kwargs.pop('disabled', None)
+        initial = kwargs.pop('initial', None)
+        super(AddOrderDetailsFormProduct, self).__init__(*args, **kwargs)
+        self.fields['product'].disabled = disabled
+        self.fields['product'].initial = initial
 
     class Meta:
         model = OrderDetail
