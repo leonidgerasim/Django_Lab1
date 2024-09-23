@@ -3,7 +3,7 @@
 {% block css %}
     input[type=number] {
             background-color: #FFFFFF;
-            width: 100%;
+            width: 20%;
             padding: 12px 20px;
             margin: 8px 0;
             display: inline-block;
@@ -16,6 +16,7 @@
 {% block content %}
 <h1>{{ title }}</h1>
 <table id="productTable">
+    <caption>Детали заказа</caption>
     <thead>
     <tr>
         <th>ID Товара</th>
@@ -43,30 +44,23 @@
 </table>
 <form action="{% url 'main:order_detail' order_id product_id %}" method="post">
     {% csrf_token %}
-    {{ product_form }}
-    {{ quantity_form }}
-    {{ error }}
-<!--    {% if product_form.errors %}-->
-<!--        {% for field in product_form %}-->
-<!--            {% for error in field.errors %}-->
-<!--                <div class="alert alert-danger">-->
-<!--                    <strong>{{ error|escape }}</strong>-->
-<!--                </div>-->
-<!--            {% endfor %}-->
-<!--        {% endfor %}-->
-<!--        {% for error in form.non_field_errors %}-->
-<!--            <div class="alert alert-danger">-->
-<!--                <strong>{{ error|escape }}</strong>-->
-<!--            </div>-->
-<!--        {% endfor %}-->
-<!--{% endif %}-->
-
+    <div>
+        {{ product_form }}
+    </div>
+    <div>
+        {{ quantity_form }}
+    </div>
+    <div>
+        <h4>Остаток: {{ product_f.quantity }}</h4>
+    </div>
+    <div>
+        <h4>Общая сумма заказа: {{ total_amount_order}}</h4>
+    </div>
     <button type="submit">Добавить Товар</button>
+    {% if flag %}
+    <a href="{% url 'main:barter' order_id %}" class="btn">Товары для Бартера</a>
+    {% else %}
     <a href="{% url 'main:index' %}" class="btn">Сохранить</a>
+    {% endif %}
 </form>
-{% if flag %}
-<p>
-    <a href="{% url 'main:barter' order_id %}">Товары для Бартера</a>
-</p>
-{% endif %}
 {% endblock %}

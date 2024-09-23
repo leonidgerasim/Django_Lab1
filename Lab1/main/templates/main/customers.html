@@ -1,40 +1,6 @@
 {% extends 'main/base.html'%}
 
 {% block css %}
-
-        table {
-            margin-top: 10px;
-            margin-right: 5px;
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #FFFFFF;
-            background-color: #FFFFFF;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        input[type=text], textarea {
-            background-color: #FFFFFF;
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
 {% endblock %}
 
 {% block content %}
@@ -46,15 +12,30 @@
 </form>
 {% if valid %}
 <table>
+    <thead>
+    <tr>
+        <th>Клиент</th>
+        <th>Сумма покупок</th>
+        <th>Текущий счёт</th>
+        <th>Поталок кредита</th>
+        <th>Долг</th>
+        <th>Остаток по кредиту</th>
+        <th>Комментарий</th>
+        <th></th>
+    </tr>
+    </thead>
     {% for i in customer %}
         <tr>
-            <td>{{ i }}</td>
+            <td>{{ i.name }}</td>
             <td>{{ i.total_amount }}</td>
-            <td>{{ i.current_account }}</td>
+            <td>{{ i.current_amount }}</td>
             <td>{{ i.loan }}</td>
             <td>{{ i.debt }}</td>
             <td>{{ i.loan_balance }}</td>
             <td>{{ i.comment }}</td>
+            <td>
+                <a href="{% url 'main:customer_order' customer_id %}" class="btn">Заказы</a>
+            </td>
         </tr>
     {% endfor %}
 </table>

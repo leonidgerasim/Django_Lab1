@@ -30,6 +30,7 @@ class Customers(models.Model):
 class Order(models.Model):
     customer = models.ForeignKey(to=Customers, on_delete=models.CASCADE)
     type_sale = models.CharField(default='Наличный расчёт', max_length=100)
+    total_amount = models.DecimalField(default=0, max_digits=12, decimal_places=2)
 
     def __str__(self):
         return f'Заказ для {self.customer.name}'
