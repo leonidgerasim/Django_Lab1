@@ -18,10 +18,13 @@
         <td>{{ order.type_sale }}</td>
         <td>{{ order.total_amount }}</td>
         <td>
-            <a href="url 'main:order_detail'" class="btn">Детали заказа</a>
+            <a href="{% url 'main:order_detail' order.id %}" class="btn">Детали заказа</a>
         </td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+<p>
+    <a href="{% url 'main:customers' %}" class="btn">Выйти</a>
+</p>
 {% endblock %}

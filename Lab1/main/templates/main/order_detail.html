@@ -1,18 +1,5 @@
 {% extends 'main/base.html'%}
 
-{% block css %}
-    input[type=number] {
-            background-color: #FFFFFF;
-            width: 20%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-{% endblock %}
-
 {% block content %}
 <h1>{{ title }}</h1>
 <table id="productTable">
@@ -24,7 +11,6 @@
         <th>Описание</th>
         <th>Цена</th>
         <th>Количество</th>
-        <th>Остаток</th>
         <th>Общая Сумма</th>
     </tr>
     </thead>
@@ -36,10 +22,12 @@
         <td>{{ detail.product.description }}</td>
         <td>{{ detail.product.price }}</td>
         <td>{{ detail.quantity }}</td>
-        <td>{{ detail.product.quantity }}</td>
         <td>{{ detail.total_amount }}</td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
+<p>
+    <a href="{% url 'main:customer_order' customer_id %}" class="btn">Выйти</a>
+</p>
 {% endblock %}

@@ -17,11 +17,13 @@ def customers(request):
     error = ''
     customer = ''
     valid = ''
+    customer_id = ''
     if request.method == 'POST':
         form = SearchCustomersForm(data=request.POST)
         valid = form.is_valid() and Customers.objects.filter(name=request.POST['name']).exists()
         if valid:
-            customer = Customers.objects.filter(name=request.POST['name'])
+            customer = Customers.objects.get(name=request.POST['name'])
+            customer_id = customer.id
         else:
             error = 'Ошибка'
             customer = 'Такого клиента нет'
@@ -32,7 +34,7 @@ def customers(request):
                'customer': customer,
                'error': error,
                'valid': valid,
-               'customer_id': customer.id}
+               'customer_id': customer_id}
     return render(request, 'main/customers.html', context)
 
 
@@ -44,8 +46,13 @@ def customer_order(request, customer_id):
     return render(request, 'main/customer_order.html', context)
 
 
-def order_detail(request):
-    return render(request, 'main/order_detail.html')
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, pk=order_id)
+    context = {'title': 'Детали заказа ' + str(order.id),
+               'order_detail': OrderDetail.objects.filter(order=order),
+               'customer_id': order.customer.id,
+               }
+    return render(request, 'main/order_detail.html', context=context)
 
 
 def products_list(request):
@@ -117,14 +124,24 @@ def create_order_detail(request, order_id, product_id):
         quantity_form = ''
         if product_form.is_valid():
             product_id = product_form.cleaned_data.get("product").id
-            return HttpResponseRedirect(reverse('main:order_detail', args=[order.pk, product_id]))
+            return HttpResponseRedirect(reverse('main:create_order_detail', args=[order.pk, product_id]))
     elif request.method == 'POST' and product_id != 'f':
         product_form = AddOrderDetailsFormProduct(disabled=True,
                                                   initial=(int(product_id),Products.objects.get(id=int(product_id))))
 
-        quantity_form = AddOrderDetailsFormQuantity(max_quantity=Products.objects.get(id=int(product_id)).quantity,
-                                                    data=request.POST)
         product_f = Products.objects.get(id=int(product_id))
+
+        if type_sale == 'Безналичный Расчёт':
+            max_quantity = min(Products.objects.get(id=int(product_id)).quantity,
+                               customer.current_amount/product_f.price)
+        elif type_sale == 'Кредит':
+            max_quantity = min(Products.objects.get(id=int(product_id)).quantity,
+                               (customer.current_amount + customer.loan_balance)/product_f.price)
+        else:
+            max_quantity = Products.objects.get(id=int(product_id)).quantity
+
+        quantity_form = AddOrderDetailsFormQuantity(max_quantity=max_quantity,
+                                                    data=request.POST)
 
         if quantity_form.is_valid():
             product = Products.objects.get(id=int(product_id))
@@ -245,28 +262,3 @@ def barter(request, order_id):
                }
     return render(request, 'main/barter.html', context)
 
-
-# def offset(request, order_id):
-#     order = get_object_or_404(Order, pk=order_id)
-#     total_amount = BarterOrder.objects.filter(order=order).aggregate(s=Sum("total_amount"))
-#     if request.method == 'POST':
-#         product_id = request.POST["product"]
-#         quantity = request.POST["quantity"]
-#         product = Products.objects.get(id=product_id)
-#         total_amount_barter = int(quantity) * product.price
-#         barter_order = BarterOrder(order=order,
-#                           product=product,
-#                           quantity=quantity,
-#                           total_amount=total_amount_barter)
-#         barter_order.save()
-#         c = product.quantity + int(quantity)
-#         Products.objects.filter(id=product.id).update(quantity=c)
-#         return HttpResponseRedirect(reverse('main:offset', args=[order.pk]))
-#     customer = order.customer
-#     s = customer.total_amount + total_amount['s']
-#     Customers.objects.filter(id=customer.id).update(total_amount=s)
-#     context = {'title': 'Заказ' + str(order_id),
-#                'order_id': order_id,
-#                'total_amount': total_amount['s'],
-#                'products_barter': BarterOrder.objects.filter(order=order)}
-#     return render(request, 'main/offset.html', context)

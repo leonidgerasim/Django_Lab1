@@ -42,7 +42,7 @@
     {% endfor %}
     </tbody>
 </table>
-<form action="{% url 'main:order_detail' order_id product_id %}" method="post">
+<form action="{% url 'main:create_order_detail' order_id product_id %}" method="post">
     {% csrf_token %}
     <div>
         {{ product_form }}
