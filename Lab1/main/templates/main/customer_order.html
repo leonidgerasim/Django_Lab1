@@ -1,0 +1,27 @@
+{% extends 'main/base.html'%}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<table id="order_table">
+    <thead>
+    <tr>
+        <th>ID Заказа</th>
+        <th>Вид продажи</th>
+        <th>Общая сумма</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.type_sale }}</td>
+        <td>{{ order.total_amount }}</td>
+        <td>
+            <a href="url 'main:order_detail'" class="btn">Детали заказа</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
